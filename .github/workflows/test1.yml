@@ -1,0 +1,30 @@
+name: OS Compatibility Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test:
+    # Вказуємо, що завдання має виконуватись на різних системах
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+      # Завантажуємо код репозиторію
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Виводимо назву ОС для перевірки
+      - name: Print OS info
+        run: |
+          echo "Running on ${{ matrix.os }}"
+
+      # Команда, що виконується на всіх ОС
+      - name: Run tests
+        run: |
+          echo "Running tests on ${{ matrix.os }}"
