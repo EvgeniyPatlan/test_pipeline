@@ -1,0 +1,33 @@
+name: Test on Multiple OS in Docker
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  docker-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [centos:8, ubuntu:22.04, debian:bullseye]
+    steps:
+      # Завантажуємо репозиторій
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Запускаємо контейнер з відповідним образом ОС
+      - name: Run Docker container
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace ${{ matrix.os }} bash -c "
+          echo 'Testing on ${{ matrix.os }}';
+          cat /etc/os-release;
+          echo 'Running tests...';
+          # Тут додайте ваші команди тестування
+          echo 'Tests completed on ${{ matrix.os }}';
+          "
+
+      # Друкуємо результат
+      - name: Print finish message
+        run: echo "Tests completed for ${{ matrix.os }}"
